@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/bulletin.css' %}">
+{% endblock style %}
+{% block contents %}
+  <div class="container mt-5 mb-5 my-class reg">
+    <h5 class="border-bottom px-3 py-3">댓글 수정</h5>
+
+    {% include 'form_errors.html' %}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group mb-3 px-3 py-2">
+        <label for="content">댓글 내용</label>
+        <textarea name="content" id="content" rows="10" class="form-control bg-white text-black">{{form.content.value}}</textarea>
+      </div>
+
+      <div class="form-group mb-3 px-3 py-2">
+        <label for="image" class="form-label">이미지 첨부 :</label>
+        <input type="file" name="image" id="image">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end px-5 pb-2">
+          <button type="submit" class="btn btn-cover">게시물 등록</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+{% endblock contents %}

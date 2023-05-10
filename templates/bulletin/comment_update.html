@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static 'css/bulletin.css' %}" />
+{% endblock style %} {% block contents %}
+<div class="container my-5 my-class reg">
+  <h5 class="border-bottom p-3" style="font-weight: bold">Comment 수정</h5>
+
+  {% include 'form_errors.html' %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group mb-3 px-3">
+      <label for="content" class="mb-2">Comment 내용을 수정해 주세요!</label>
+      <textarea
+        name="content"
+        id="content"
+        rows="10"
+        class="form-control mb-3 px-3 bg-white"
+      >
+{{form.content.value}}</textarea
+      >
+    </div>
+    <button type="submit" class="btn btn-ls mb-3 mx-3">Comment 수정</button>
+  </form>
+</div>
+{% endblock contents %}

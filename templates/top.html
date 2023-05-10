@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+    {% block style %}{% endblock style %}
+    <title>MissU</title>
+  </head>
+
+  <body>
+<header style="background-color: #1a244d">
+    {% include 'nav_sec.html' %}
+  </header>
+  <main>
+    <div class="wrapper">
+      <div class="content">
+        {% block contents %}{% endblock contents %}
+      </div>
+    </div>
+  </main>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    {% block script %}{% endblock script %}
+  
+    <footer>
+      <ul>
+        <li>| 서비스 약관/정책</li>
+        <li>| 권리침해신고</li>
+        <li>| 이용약관</li>
+        <li>| 카페 고객센터</li>
+        <li>| 검색비공개 요청 |</li>
+        
+      </ul>
+      <ul>
+        <li>Copyright © 2023 Alpaco Campus</li>
+      </ul>
+    </footer>
+
+  </body>
+
+</html>
+{% comment %} <footer> {% endcomment %}
+  {% comment %} <div class="container"> {% endcomment %}
+    {% comment %} <p class="copyright">Copyright © 2023 Music Company</p> {% endcomment %}
+    {% comment %} <nav class="footer-nav"> {% endcomment %}
+      {% comment %} <a href="#">Contact Us</a> {% endcomment %}
+      {% comment %} <a href="#">About Us</a> {% endcomment %}
+      {% comment %} <a href="#">Privacy Policy</a> {% endcomment %}
+    {% comment %} </nav> {% endcomment %}
+  {% comment %} </div> {% endcomment %}
+{% comment %} </footer> {% endcomment %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/detail_style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/modal_style.css' %}"/>
+{% endblock style %}
+{% block contents %}
+  <div id="contents_section" class="contents">
+    <!--페이지 윗부분 꾸미기-->
+    <div class="page_header">
+      <h2>앨범 정보</h2>
+    </div>
+    <div class="section_info">
+      <div class="wrap_info">
+        <div class="album">
+          <a href="#" title="music" class="music1" id="music1">
+            <img src="{{melon.image.url}}" alt="" width="295px;" height="295px;"/>
+            <span class="album_frame"></span></a>
+        </div>
+        <div class="entry">
+          <div class="info">
+            <span class="album_type">앨범 :
+            </span>
+            <strong class="album_name">{{melon.album}}</strong>
+            <div class="artist">
+              <a href="" title="musician" class="artist_name">가수 :{{melon.musician}}</a>
+            </div>
+            <div class="song_name">{{melon.title}}</div>
+          </div>
+          <div class="meta">
+            <dl class="list">
+              <dt>발매일</dt>
+              <dd>{{melon.released_at}}</dd>
+              <dt>장르</dt>
+              <dd>{{melon.genre}}</dd>
+              <dt>발매사</dt>
+              <dd>{{melon.released_cop}}</dd>
+              <dt>기획사</dt>
+              <dd>{{melon.planned_cop}}</dd>
+            </dl>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn_play">
+    <div class="wrap_btn_tb top">
+      <!-- modal 버튼 -->
+      <button type="button" title="선택된 곡 듣기" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" id="music_play">
+        <link rel="stylesheet" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play" viewbox="0 0 16 16">
+          <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
+        </svg>
+        <span class="cnt">Play</span>
+      </button>
+    </div>
+  </div>
+  {% include 'music/melon_modal.html' %}
+{% endblock contents %}
+{% block script %}
+  <script src={% static 'js/melon.js' %}></script>
+  <script src={% static 'js/music_modal.js' %}></script>
+{% endblock script %}>

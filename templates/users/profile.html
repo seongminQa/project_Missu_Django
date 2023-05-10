@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/mystyle.css' %}">
+  <style>
+    .pass_style {
+      background: white;
+      width: 700px;
+      height: auto;
+      margin-bottom: 150px;
+      margin-top: 50px;
+      padding: 50px 25px;
+      background: #FFCC57;
+      border-radius: 50px;
+    }
+
+    .gesi {
+      padding-left: 40px;
+      text-align: start;
+      display: grid;
+      grid-template-columns: 215px 215px 215px;
+      grid-template-rows: 30px;
+    }
+
+    .count,
+    .dn {
+      font-size: 1.2rem;
+      font-weight: 550;
+    }
+
+    .lin {
+      height: 5px;
+      color: white;
+    }
+
+    hr {
+      opacity: 1;
+    }
+  </style>
+{% endblock style %}
+{% block contents %}
+  <div class="container pass_style">
+    <div class="row justify-content-md-center">
+      <div class="col-4">
+        <a href="#imageModal" data-bs-toggle="modal" data-bs-target="#imageModal">
+          <img src="{{user.profile.image.url}}" alt="" class="rounded-circle profile_change" title="프로필 사진 변경">
+        </a>
+      </div>
+      <div class="col-6">
+        <h2>
+          <!--로그인 사용자 name-->
+          My Profile
+        </h2>
+        <div class="row my-3">
+          <div class="col-12 dn">
+            <!--로그인 사용자 nickname-->
+            이름 :
+            {{user.name}}
+            <br>
+            닉네임 :
+            {{user.nickname}}
+            <br>
+            이메일 :
+            {{user.email}}
+          </div>
+        </div>
+      </div>
+      <hr class="lin mt-3">
+      <div class="row my-3 mb-2 text-">
+        <div class="gesi">
+          <div class="count">게시물 :
+            <!--사용자가 작성한 게시물 숫자-->
+            {{contents.count}}개
+          </div>
+          <div class="count">추천 수 :
+            <!--사용자가 추천한 횟수-->
+            {{voters.voters}}개
+          </div>
+
+          <div class="count">조회 수 :
+            {{view_cnts.count}}
+            <!--사용자가 작성한 게시물의 조회수-->
+
+            {{view_cnts.view_cnts}}회
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'users/profile_modal.html' %}
+{% endblock contents %}
+{% block script %}
+  <script>
+    //현재사진삭제 클릭이 되면 a 태그 기능 중지
+    //ajax 로 요청 보내기  "{% url 'user_profile_delete' %}"
+    $(".delete").on("click", function (e) {
+      e.preventDefault();
+
+      $.ajax({
+        url: "{% url 'user_profile_delete' %}",
+
+        success: function (response) {
+          console.log(response);
+          location.reload(); // http://127.0.0.1:8000/ 를 재로딩
+        },
+        error: function (req, status, error) {
+          console.log(req.responseJSON.message);
+        }
+      })
+    })
+
+    // 프로필 사진 변경 클릭되면 사용자가 변경할 이미지를 선택
+    // 사용자가 선택한 이미지를 서버로 전송(ajax)
+    $("#file").on("change", function () {
+
+      const form = document.querySelector("#image_change");
+      // 폼에 있는 데이터 객체로 만들기
+      formData = new FormData(form);
+
+      $.ajax({
+        url: "{% url 'user_profile_update' %}", // http://127.0.0.1:8000/users/profile/update/
+        type: "post",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          console.log(response);
+          location.reload(); // http://127.0.0.1:8000/users/profile 를 재로딩
+        },
+        error: function (req, status, error) {
+          console.log(req.responseJSON.message);
+        }
+      })
+    })
+  </script>
+{% endblock script %}

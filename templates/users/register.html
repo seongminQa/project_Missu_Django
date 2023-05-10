@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+  <style>
+    .my-class {
+      background: #FFCC57;
+      width: 430px;
+      height: auto;
+      margin: 50px 0 50px 0;
+    }
+
+    {% comment %} .container {
+      width: 430px;
+      height: auto;
+      margin-bottom: 50px;
+    } {% endcomment %}
+
+    h3 {
+      font-weight: bold;
+      text-align: center;
+
+    }
+
+    .btn_signup {
+      margin-top: 20px;
+      margin-bottom: 30px;
+      display: block;
+      width: 100%;
+      padding: 13px 0;
+      border-radius: 6px;
+      border: solid 3px rgba(0, 0, 0, .15);
+      box-sizing: border-box;
+      font-weight: bold;
+      border-color: white;
+      background-color: #1A244D;
+      color: #FFCC57;
+    }
+
+    .btn_signup:hover {
+      border-color: #1A244D;
+      background-color: #FFCC57;
+      color: black;
+      position: absoulte;
+    }
+
+    .form-label {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock style %}
+{% block contents %}
+
+  <div class="container rounded-5 px-5 pt-5 my-class">
+    <div class="u-align-center u-text u-text-default u-text-1">
+      <h3>회원가입</h3>
+    </div>
+    {% include 'form_errors.html' %}
+    <form method="post" class="col-md-auto mb-4">
+      {% csrf_token %}
+      <div>
+        <div class="form-group col-lg">
+          <label for="username" class="form-label">이메일</label>
+          <input type="email" name="email" id="email" class="form-control" value="{{form.email.value|default_if_none:''}}">
+        </div>
+        <div class="form-group col-lg">
+          <label for="password" class="form-label">비밀번호</label>
+          <input type="password" name="password1" id="password1" class="form-control" value="{{form.password1.value|default_if_none:''}}">
+        </div>
+        <div class="form-group mb-2 col-lg">
+          <label for="password" class="form-label">비밀번호 확인</label>
+          <input type="password" name="password2" id="password2" class="form-control" value="{{form.password2.value|default_if_none:''}}">
+        </div>
+        <div class="form-group mb-2 col-lg">
+          <label for="name" class="form-label">이름</label>
+          <input type="text" name="name" id="name" class="form-control" value="{{form.name.value|default_if_none:''}}">
+        </div>
+        <div class="form-group mb-2 col-lg">
+          <label for="nickname" class="form-label">닉네임</label>
+          <input type="text" name="nickname" id="nickname" class="form-control" value="{{form.nickname.value|default_if_none:''}}">
+        </div>
+
+        <div class="form-group mt-5">
+          <button type="submit" class="btn_signup">
+            <span class="btn_text">회원가입</span>
+          </button>
+          <br>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock contents %}

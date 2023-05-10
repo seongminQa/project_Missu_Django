@@ -1,0 +1,227 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'css/poll_style.css' %}" />
+{% endblock style %} {% block contents %}
+<div class="container my-class">
+  <div class="container ctbox item text-black board">
+    <div class="container commu" id="slider">
+      <div class="glow text-white">
+        "나 좋아하지마."<br />
+        "그게 뭔데"<br />
+        "나 좋아하지 말라고"<br />
+        "그게 뭔데 임마"
+      </div>
+      <div>
+        <div class="slider__item">
+          <img src="{% static 'img/f1.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/m1.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f2.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/m2.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f3.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f4.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/m3.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f5.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f6.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f7.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/m4.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f8.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f9.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f10.jpg' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/f11.PNG' %}" alt="" class="idol" />
+        </div>
+        <div class="slider__item">
+          <img src="{% static 'img/m5.jpg' %}" alt="" class="idol" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container ctbox item text-black fools">
+    주간 예상 아이돌 순위
+    <div class="container fol-vw justify-content-center">
+      <div class="polls">
+        <div class="poll">
+          <div class="question"></div>
+          <div class="answers"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container ctbox item text-black">
+    <div class="container">
+      <div class="clg">
+        <img
+          src="{% static 'img/melon.png' %}"
+          alt=""
+          class="mbg rounded-circle"
+        />
+      </div>
+      Melon Weeks
+      <div class="dot">&#149;</div>
+    </div>
+    <div class="lst">
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im">Rank</div>
+      <div class="im">Title</div>
+      <div class="im">Aritist</div>
+      <div class="im">Album</div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+    </div>
+    <div class="container morra">
+      {% for melon in melon %}
+      <div class="chart">
+        <div class="itm rank">{{melon.rank}}</div>
+        <div class="itm">{{melon.title|truncatechars:12}}</div>
+        <div class="itm">{{melon.musician|truncatechars:11}}</div>
+        <div class="itm">
+          <a href="{% url 'melon_detail' melon.pk %}" class="nav-link"
+            >{{melon.album|truncatechars:12}}</a
+          >
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="form-group mt-3">
+      <button type="submit" class="btn_suc">
+        <a href="https://www.melon.com/chart/week/index.htm" class="bt_link" target="_blank"
+          >더보기</a
+        >
+      </button>
+    </div>
+  </div>
+  <div class="container ctbox item text-black">
+    <div class="container">
+      <div class="clg">
+        <img
+          src="{% static 'img/Bugs.png' %}"
+          alt=""
+          class="mbg rounded-circle"
+        />
+      </div>
+      Bugs Weeks
+      <div class="dot">&#149;</div>
+    </div>
+    <div class="lst">
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im">Rank</div>
+      <div class="im">Title</div>
+      <div class="im">Artist</div>
+      <div class="im">Album</div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+    </div>
+    <div class="container morra">
+      {% for bugs in bugs %}
+      <div class="chart">
+        <div class="itm rank">{{bugs.rank}}</div>
+        <div class="itm">{{bugs.title|truncatechars:12}}</div>
+        <div class="itm">{{bugs.musician|truncatechars:11}}</div>
+        <div class="itm">
+          <a href="{% url 'bugs_detail' bugs.pk %}" class="nav-link"
+            >{{bugs.album|truncatechars:12}}</a
+          >
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="form-group mt-3">
+      <button type="submit" class="btn_suc">
+        <a
+          href="https://music.bugs.co.kr/chart/track/week/total"
+          class="bt_link" target="_blank"
+          >더보기</a
+        >
+      </button>
+    </div>
+  </div>
+  <div class="container ctbox item text-black">
+    <div class="container">
+      <div class="clg">
+        <img
+          src="{% static 'img/genie.png' %}"
+          alt=""
+          class="mbg rounded-circle"
+        />
+      </div>
+      Genie Weeks
+      <div class="dot">&#149;</div>
+    </div>
+    <div class="lst">
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im">Rank</div>
+      <div class="im">Title</div>
+      <div class="im">Aritist</div>
+      <div class="im">Album</div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+      <div class="im"></div>
+    </div>
+    <div class="container morra">
+      {% for genie in genie %}
+      <div class="chart">
+        <div class="itm rank">{{genie.rank}}</div>
+        <div class="itm">{{genie.title|truncatechars:12}}</div>
+        <div class="itm">{{genie.musician|truncatechars:11}}</div>
+        <div class="itm">
+          <a href="{% url 'genie_detail' genie.pk %}" class="nav-link"
+            >{{genie.album|truncatechars:12}}</a
+          >
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="form-group mt-3">
+      <button type="submit" class="btn_suc">
+        <a href="https://genie.co.kr/chart/top200?ditc=W&rtm=N" class="bt_link" target="_blank"
+          >더보기</a
+        >
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock contents %} {% block script %}
+<script src="static/js/poll_script.js"></script>
+{% endblock script %}

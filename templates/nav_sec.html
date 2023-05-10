@@ -1,0 +1,140 @@
+{% load static %}
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/top.css' %}">
+  <style>
+    .thumbnail {
+      width: 40px;
+      height: 40px;
+
+    }
+
+    button {
+      border-radius: 0;
+      border: 0;
+      background: none;
+    }
+
+    span {
+      padding-right: 15px;
+    }
+  </style>
+{% endblock style %}
+<div class="container grid">
+  <div class="itms"></div>
+  <div class="itms"></div>
+  <div class="itms">
+    <div class="logo">
+      <a href="{% url 'home' %}" class="text-center d-flex justify-content-center">
+        <img src="{% static 'img/project_logo.png' %}" class="image_logo" width="299" height="95">
+      </a>
+    </div>
+  </div>
+  <div class="itms"></div>
+  <div class="itms">
+    <ul class="right">
+      <li class="nav-item">
+        {% if user.is_authenticated %}
+          <span class="dropdown mx-2 align-top ">
+            <button class="dropdown-toogle px-0 py-0" data-bs-toggle="dropdown">
+              <img src="{{user.profile.image.url}}" alt="" class="rounded-circle thumbnail">
+            </button>
+            <div class="dropdown-menu mt-2">
+              <a class="dropdown-item" href="{% url 'profile_edit' %}">프로필</a>
+              <a class="dropdown-item" href="{% url 'password_change' %}">비밀번호 변경</a>
+              <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+            </div>
+          </span>
+          <br>
+        {% else %}
+          <a class="nav-link activation text-white" aria-current="page" href="{% url 'register' %}">회원가입</a>
+        {% endif %}
+      </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item ">
+          <p class="intro text-white">{{user.nickname}}
+            님! 환영합니다.</p>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="itms text-white"></div>
+  <div class="itms text-white"></div>
+  <div class="itms text-white">
+    <div class="container text-center d-flex justify-content-center">
+      <!-- ============= COMPONENT ============== -->
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="collapse navbar-collapse clearfix" id="main_nav">
+          <ul class="navbar-nav navi left">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown jp" href="#" data-bs-toggle="dropdown">
+                커뮤니티
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item mu" href="#">
+                    남 &raquo;
+                  </a>
+                  <ul class="submenu dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.daum.net/BANGTAN" target="_blank">방탄소년단</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.naver.com/kakaodple" target="_blank">NCTDREAM</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.daum.net/pledis-17" target="_blank">세븐틴</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.daum.net/monsta-x" target="_blank">몬스타엑스</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.daum.net/WeAreOneExo" target="_blank">엑소</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="dropdown-item mu" href="#">
+                    여 &raquo;
+                  </a>
+                  <ul class="submenu dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="http://newjeans.info/" target="_blank">뉴진스</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="http://cafe.daum.net/cube-g-i-dle" target="_blank">(여자)아이들</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="http://cafe.daum.net/BLACKPINK1" target="_blank">블랙핑크</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.naver.com/hybeeeee" target="_blank">르세라핌</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.daum.net/IVEstarship/_rec" target="_blank">아이브</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="https://cafe.daum.net/dafdgds" target="_blank">에스파</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown jp" href="{% url 'notice_index' %}">
+                공지사항</a>
+            </li>
+            <li>
+              <a class="nav-link dropdown jp" href="{% url 'bulletin_index' %}">
+                자유게시판</a>
+            </li>
+          </ul>
+        </div>
+        <!-- navbar-collapse.// -->
+        <!-- container-fluid.// -->
+      </nav>
+    </div>
+  </div>
+  <div class="itms text-white"></div>
+  <div class="itms text-white"></div>
+
+</div>

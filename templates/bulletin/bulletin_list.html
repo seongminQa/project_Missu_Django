@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load board_filter %}
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/bulletin.css' %}">
+{% endblock style %}
+{% block contents %}
+  <div class="container my-5 py-4 px-3 text-center my-class">
+    <h1>
+      <b>자유게시판</b>
+    </h1>
+    <div class="row justify-content-end my-3 mb-4">
+      <div class="col-1">
+        <select name="" id="so" class="form-control bg-white text-black so">
+          <option value="recent" {% if so == 'recent' %} selected="selected" {% endif %}>최신순</option>
+          <option value="recommend" {% if so == 'recommend' %} selected="selected" {% endif %}>추천순</option>
+          <option value="popular" {% if so == 'popular' %} selected="selected" {% endif %}>인기순</option>
+        </select>
+      </div>
+      <div class="col-3">
+        <div class="input-group">
+          <input type="text" name="keyword" id="keyword" class="form-control text-black bg-white" value="{{keyword|default_if_none:''}}">
+          <button type="button" class="btn btn-outline-secondary">검색</button>
+        </div>
+      </div>
+    </div>
+
+    <table class="table text-center" style="width:100%; min-width:500px;">
+      <thead style="font-size:16px; line-heigth:30%;">
+        <tr>
+          <th style="width:5%;">번호</th>
+          <th style="width:5%;">추천</th>
+          <th style="width:45%;">제목</th>
+          <th style="width:10%;">조회수</th>
+          <th style="width:10%;">작성자</th>
+          <th style="width:25%;">작성일시</th>
+        </tr>
+      </thead>
+
+      {% for list in lists %}
+        <tbody>
+          <tr class="align-middle">
+            <td>{{lists.paginator.count|sub:lists.start_index|sub:forloop.counter0|add:1}}</td>
+            <td>
+              {% if list.voter.count %}
+                <span class="badge bg-primary px-2 py-1">{{list.voter.count}}</span>
+              {% endif %}
+            </td>
+            <td>
+              <a class="nav-link move" href="{% url 'bulletin_detail' list.id %}" style="text-decoration-line:none; display:inline;">{{list.title}}
+                <span class="text-green">[
+                  {{list.bulletinanswer_set.count}}
+                  ]</span></a>
+            </td>
+            <td>{{list.view_cnt}}</td>
+            <td>{{list.author.nickname}}</td>
+            <td>{{list.created_at}}</td>
+          </tr>
+        </tbody>
+      {% endfor %}
+    </table>
+
+    <div class="container text-start">
+      <div class="d-inline">
+        <a href="{% url 'bulletin_create' %}" class="btn btn-primary">게시물 등록</a>
+      </div>
+    </div>
+    <!-- 페이지 처리 -->
+    <nav aria-label="...">
+      <ul class="pagination justify-content-center">
+        {% if lists.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="#" data-page="{{lists.previous_page_number}}">이전</a>
+          </li>
+        {% endif %}
+
+        {% for page in lists.paginator.page_range %}
+          {% if page >= lists.number|add:-5 and page <= lists.number|add:5 %}
+            <li class="page-item {% if page == lists.number %}active{% endif %}">
+              <a class="page-link" href="#" data-page="{{page}}">{{page}}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if lists.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="#" data-page="{{lists.next_page_number}}">다음</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <!-- 검색 시 동작하는 폼 method를 post로 적용하지 않으면 무조건 get방식-->
+    <form action='{% url 'bulletin_index' %}' id='searchForm'>
+      <input type="hidden" name="keyword" class="keyword" value="{{keyword|default_if_none:''}}">
+      <input type="hidden" name="page" id="page" value="{{page|default_if_none:''}}">
+      <input type="hidden" name="so" id="sort" value="{{so|default_if_none:''}}">
+    </form>
+  </div>
+{% endblock contents %}
+
+{% block script %}
+  <script>
+    const searchForm = document.querySelector('#searchForm');
+
+    // 검색버튼 클릭 시
+    // 사용자가 입력한 검색어 가져오기
+    document
+      .querySelector('.btn-outline-secondary')
+      .addEventListener("click", () => {
+        let keyword = document
+          .querySelector('#keyword')
+          .value;
+
+        // 가져온 검색이름 searchForm 안의 keyword요소에 value 값으로 지정
+        document
+          .querySelector('.keyword')
+          .value = keyword;
+        // searchForm 안의 page 요소의 값을 1로 지정
+        document
+          .querySelector('#page')
+          .value = 1;
+        // searchForm 전송
+        searchForm.submit();
+      })
+
+    // 하단의 페이지 1,2,3 ... -> 클릭시 searchForm 전송하기
+    const pages = document.querySelectorAll('.page-link');
+    pages.forEach((item, idx) => {
+      item.addEventListener("click", (e) => {
+        document
+          .querySelector('#page')
+          .value = e.target.dataset.page;
+        // searchForm 전송
+        searchForm.submit();
+      })
+    })
+
+    // so : sort 정렬조건이 변화가 일어나면,
+    // select 에서 선택된 값 가져온 후  searchForm 안의 sort요소의 value 값으로 지정
+
+    document
+      .querySelector('#so')
+      .addEventListener("change", (e) => {
+        document
+          .querySelector('#sort')
+          .value = e.target.value; //
+
+        searchForm.submit();
+      })
+
+    // 상세보기 - keyword, sort, page 같이 따라가야함
+    //           searchForm 보내서 필요한 정보를 detail 로 보내기
+    const titles = document.querySelectorAll(".move");
+
+    titles.forEach((title, idx) => {
+      title.addEventListener('click', (e) => {
+        // 제목 클릭 시 a 태그 기능 중지
+        e.preventDefault();
+
+        searchForm.setAttribute("action", e.target.getAttribute('href'));
+        searchForm.submit();
+      })
+    })
+  </script>
+{% endblock script %}

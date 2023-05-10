@@ -1,0 +1,345 @@
+{% extends 'base.html' %} 
+{% load board_filter %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/bulletin.css' %}">
+{% endblock style %} 
+{% block contents %}
+<div class="container my-3 mt-5 mb-5 my-class">
+  <div class="col-12">
+    
+    <!-- form 양식을 지키지 못할 때 메시지 -->
+    {% if messages %}
+    <div class="alert alert-danger my-3">
+      {% for msg in messages %}
+      <strong>{{msg.tags}}</strong>
+      <ul>
+        <li>{{msg.message}}</li>
+      </ul>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row mt-3">
+      <div class="col-md-10">
+        <h2 class="horder-bottom py-2 px-3" style="font-size:50px; font-weight:bold;">
+          <!-- 게시물 제목 -->
+          {{bulletin.title}}
+        </h2>
+      </div>
+    </div>
+    <hr />
+    <div class="row my-3">
+      <div class="col-12 px-4">
+        <div class="card">
+          <div class="card-body">
+            <!-- 게시물 내용 -->
+            <div class="card-text my-3" style="white-space: pre-line;">{{bulletin.content|mark}}
+            </div>
+            <!-- 게시물 이미지 -->
+            {% if bulletin.image %}
+              <img src="{{bulletin.image.url}}" alt="" class="mx-auto d-block mt-3 mb-5" style="height:450px; width:600px;">
+            {% endif %}
+
+            <div class="srt">
+              <!-- 로그인 유저가 게시물 작성자와 같을때 보이게끔 -->
+              <!-- bulletin.author:글쓴이 / request.user:로그인사용자 -->
+              {% if bulletin.author == request.user %}
+              <div class="my-3 pt-3">
+                <a href="{% url 'bulletin_update' bulletin.id %}"class="btn btn-cover">수정</a>
+                <a href="#" class="btn btn-dngr" data-uri="{% url 'bulletin_delete' bulletin.id %}">삭제</a>
+              </div>
+              {% endif %}
+              <div class="row justify-content-between">
+                <div class="col-5 offset-md-3 good">
+                  <!-- 좋아요 클릭 True / 클릭 False (질문)-->
+                  <img src="/static/img/recommendation_True.png" alt="like" data-uri="{% url 'vote_bulletin' bulletin.id %}" class="recommend mx-auto d-block " style="height:60px; width:60px;" type="button">
+                  <div class="text-center gd">추천 : <strong>{{bulletin.voter.count}}</strong></div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end pt-3">
+                <div class="bx badge bg-info p-2">
+                  <!-- 작성자 정보 -->
+                  <div class="mb-2 text-center">
+                    {{bulletin.author.nickname}}
+                  </div>
+                  <!-- 게시물 작성 날짜 (수정날짜가 존재하지 않는다면 작성날짜만 보여주기) -->
+                  {% if not bulletin.modified_at %} 
+                    {{bulletin.created_at}}[작성]
+                  {% else %}
+                    {{bulletin.modified_at}}[수정]
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            
+            
+
+            <!-- 게시물의 코멘트 댓글 영역** -->
+            <!-- Comment가 존재한다면 보여주기 (comment page처리 commentlists)-->
+            {% if commentlists %}
+            <div class="mt-3">
+              {% for comment in commentlists %}
+              <!-- 앵커 부분 -->
+              <a name="comment_{{comment.id}}"></a>
+              <div class="comment py-2 text-muted">
+                <span style="white-space: pre-line; font-size:1.2rem;"
+                  ><strong>{{comment.content}}</strong></span
+                >
+                <span> - <strong style="color:blue;">{{comment.author.nickname}}</strong> /
+                  
+                  {% if not comment.modified_at %}
+                    {{comment.created_at}}[작성]
+                  {% else %}
+                    {{comment.modified_at}}[수정]
+                  {% endif %}
+                   </span>
+
+                <!-- comment 작성자와 로그인 사용자가 같다면 보여주기-->
+                {% if comment.author == request.user %}
+                <a
+                  href="{% url 'comment_bulletin_update' comment.id %}"
+                  class="small"
+                  >수정</a
+                >
+                <a
+                  href="#"
+                  data-uri="{% url 'comment_bulletin_delete' comment.id %}"
+                  class="small delete"
+                  >삭제</a
+                >
+                {% endif %}
+              </div>
+              {% endfor %}
+
+              <!-- 게시물에 대한 comment page** -->
+              <nav aria-label="...">
+                <ul class="pagination justify-content-center">
+                  {% if commentlists.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="#" data-page="{{commentlists.previous_page_number}}">이전</a>
+                    </li>
+                  {% endif %}
+            
+                  {% for comment_page in commentlists.paginator.page_range %}
+                    {% if comment_page >= commentlists.number|add:-5 and comment_page <= commentlists.number|add:5 %}
+                      <li class="page-item {% if comment_page == commentlists.number %}active{% endif %}">
+                        <a class="page-link" href="#" data-page="{{comment_page}}">{{comment_page}}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+            
+                  {% if commentlists.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="#" data-page="{{commentlists.next_page_number}}">다음</a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+
+            </div>
+            {% endif %}
+
+            <div>
+              <a
+                href="{% url 'comment_bulletin_create' bulletin.id %}"
+                class="small"
+                >Comment 추가..</a
+              >
+            </div>
+            <!-- 게시물의 코멘트 댓글 영역 종료 -->
+          </div>
+          <!-- 게시물 card body 종료 -->
+        </div>
+
+        <!-- 검색(목록으로 돌아갈때 이전페이지 keyword, page, so 값들을 가져감) 기능 -->
+        <form action='{% url 'bulletin_index' %}' id='listForm'>
+          <input type="hidden" name="keyword" class="keyword" value="{{keyword|default_if_none:''}}">
+          <input type="hidden" name="page" id="page" value="{{page|default_if_none:''}}">
+          <input type="hidden" name="so" id="sort" value="{{so|default_if_none:''}}">
+        </form>
+
+        <a href="" class="back_to_list btn btn-ls my-4"><i class="bi bi-list">목록으로</i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 게시물 댓글 영역 시작 -->
+<div class="container my-3">
+  <div class="col-12">
+    <h5 class="border-bottom my-3 py-2" style="color:white;">
+    <!-- 게시물 답변 개수-->
+    {{bulletin.bulletinanswer_set.count}}개의 댓글이 있습니다.
+    </h5>
+  </div>
+
+  {% for answer in bulletin.bulletinanswer_set.all %}
+  <a name="answer_{{answer.id}}"></a>
+  <div class="col-12">
+    <div class="card my-3">
+      <div class="card-body">
+        <div class="card-text" style="white-space: pre-line; font-size:25px;">{{answer.content|mark}}</div>
+
+        {% if answer.image %}
+          <img src="{{answer.image.url}}" alt="" class="mx-auto d-block" style="height:200px; width:300px;">
+        {% endif %}
+
+        <div class="row justify-content-between">
+          <div class="col-3 align-self-end">
+            <span class="badge text-bg-light" style="font-size:14px;">추천 : {{answer.voter.count}}</span><br>
+              <a href="#" data-uri="{% url 'vote_answer' answer.id %}" class="recommend btn btn-dark" style="font-size:10px;">추천하기</a>
+          </div>
+          <div class="col-auto">
+            <div class="badge bg-info p-2 m-2">
+              <!-- 작성자 정보 -->
+              <div class="mb-2 text-center"><strong>{{answer.author.nickname}}</strong></div>
+              <!-- 답변 작성 날짜 -->
+              {% if not answer.modified_at %}
+                {{answer.created_at}}[작성]
+              {% else %}
+                {{answer.modified_at}}[수정]
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+          {% if answer.author == request.user %}
+          <div class="my-3">
+            <a
+              href="{% url 'bulletin_answer_update' answer.id %}"
+              class="btn btn-cover"
+              >수정</a
+            >
+            <a
+              href="#"
+              class="btn btn-dngr"
+              data-uri="{% url 'bulletin_answer_delete' answer.id %}"
+              >삭제</a
+            >
+          </div>
+          {% endif %}
+  
+          <!-- Comment가 존재한다면 보여주기 -->
+          {% if answer.comment_set.count > 0 %}
+          <div class="mt-3">
+            {% for comment in answer.comment_set.all %}
+            <!-- 앵커 부분 -->
+            <a name="comment_{{comment.id}}"></a>
+            <div class="comment py-2 text-muted">
+              <span style="white-space: pre-line; font-size:18px;"><strong>{{comment.content}}</strong></span>
+              <span> - <strong style="color:blue;">{{comment.author.nickname}}</strong> / 
+                {% if not comment.modified_at %}
+                  {{comment.created_at}}[작성]
+                {% else %}
+                  {{comment.modified_at}}[수정]
+                {% endif %}
+              </span>
+  
+              <!-- 답변 comment 작성자와 로그인 사용자가 같다면 보여주기-->
+              {% if comment.author == request.user %}
+              <a
+                href="{% url 'comment_answer_update' comment.id %}"
+                class="small"
+                >수정</a
+              >
+              <a
+                href="#"
+                data-uri="{% url 'comment_answer_delete' comment.id %}"
+                class="small delete">삭제</a
+              >
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <div>
+            <a href="{% url 'comment_answer_create' answer.id %}" class="small"
+              >Comment 추가..</a
+            >
+          </div>
+            <!-- 게시물 답변의 코멘트 댓글 영역 종료 -->
+        </div>
+      </div>
+    </div>
+    <!-- 답변내용종료 -->
+    {% endfor %}
+  </div>
+
+  <div class="container my-3 px-4 py-4 my-class">
+    <div class="d-flex justify-content-center">
+    <!-- 새로운 답글 등록 -->
+      <div class="col-12 my-3">
+        <!-- 게시물 답변 작성 폼 -->
+        {% include 'form_errors.html' %}
+        <form action="{% url 'bulletin_answer_create' bulletin.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+          <div class="form-group mb-3">
+            <textarea name="content" id="content" rows="5" class="form-control bg-white" {% if not user.is_authenticated %} disabled {% endif %}></textarea>
+          </div>
+          <div class="form-group mb-3">
+            <label for="image" class="form-label">이미지 첨부 :</label>
+            <input type="file" name="image" id="image">
+          </div>
+          <button type="submit" class="btn btn-cover">댓글 등록</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- comment 페이지 반응하는 폼 -->
+<form action='{% url 'bulletin_detail' bulletin.id %}' id='searchForm'>
+  <input type="hidden" name="keyword" class="keyword" value="{{keyword|default_if_none:''}}">
+  <input type="hidden" name="page" id="page" value="{{page|default_if_none:''}}">
+  <input type="hidden" name="so" id="sort" value="{{so|default_if_none:''}}">
+  <!-- 값을 넘기지 말라하신 부분 -->
+  <input type="hidden" name="comment_page" id="comment_page" value="{{comment_page|default_if_none:''}}">
+</form>
+
+{% endblock contents %} 
+{% block script %}
+<script>
+  let elements = document.querySelectorAll(".btn-dngr, .delete");
+  
+  elements.forEach((ele, idx) => {
+    ele.addEventListener("click", (e) => {
+      // 게시물(답변) 삭제 버튼클릭 시 confirm('정말 삭제할거니?') 띄워보기
+      if (confirm("정말로 삭제하시겠습니까?")) {
+        // confirm() : 확인을 클릭하면, data-uri 값을 가지고 오기, location.href = 가져온 data-uri 대입
+        location.href = e.target.dataset.uri; // data- 값은 dataset으로 들어온다..
+      }
+    });
+  });
+
+  // 목록으로 클릭 시 listForm submit 시키기
+  document.querySelector(".back_to_list").addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector("#listForm").submit();
+  })
+
+  let votes = document.querySelectorAll(".recommend");
+
+  votes.forEach((ele, idx) => {
+    ele.addEventListener("click", (e) => {
+      if (confirm("정말 추천하시겠습니까?")) {
+        location.href = e.target.dataset.uri;
+      }
+    });
+  });
+  
+  // comment 페이지 처리
+  const pages = document.querySelectorAll('.page-link');
+    pages.forEach((item, idx) => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        document
+          .querySelector('#comment_page')
+          .value = e.target.dataset.page;
+        // searchForm 전송
+        searchForm.submit();
+      })
+    }) 
+
+</script>
+{% endblock script %}

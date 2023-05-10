@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load board_filter %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/notice.css' %}" />
+{% endblock style %}
+{% block contents %}
+  <div class="container my-3 mt-5 mb-5 my-class det">
+    <div class="col-12">
+
+      <!-- form 양식을 지키지 못할 때 메시지 -->
+      {% if messages %}
+        <div class="alert alert-danger my-3">
+          {% for msg in messages %}
+            <strong>{{msg.tags}}</strong>
+            <ul>
+              <li>{{msg.message}}</li>
+            </ul>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="row mt-3">
+        <div class="col-md-10">
+          <h2 class="horder-bottom py-2  my-3 mb-3" style="font-size:45px;">
+            <!-- 공지글 제목 -->
+            {{notice.title}}
+          </h2>
+        </div>
+      </div>
+      <hr/>
+      <div class="row my-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-text pb-5 mb-3" style="white-space: pre-line;">
+                
+                {{notice.content|mark}}</div>
+              <!-- 공지물 이미지 -->
+              {% if notice.image %}
+                <img src="{{notice.image.url}}" alt="" class="mx-auto d-block mt-3 mb-5" style="height:450px; width:600px;">
+              {% endif %}
+
+
+            <div class="srt">
+              <!-- 관리자 아이디에만 공지등록 버튼이 보이게끔 -->
+              {% if request.user.is_superuser == 1 %}
+                <div class="my-3">
+                  <a href="{% url 'notice_update' notice.id %}" class="btn btn-cover">수정</a>
+                  <a href="#" class="btn btn-dngr" data-uri="{% url 'notice_delete' notice.id %}">삭제</a>
+                </div>
+              {% endif %}
+              <div class="d-flex justify-content-end pt">
+                <div class="bx badge bg-info p-2">
+                  <!-- 작성자 정보 -->
+                  <div class="mb-2 text-start">{{notice.author.nickname}}</div>
+                  <!-- 질문 작성 날짜 -->
+                  {% if not notice.modified_at %}
+                    {{notice.created_at}}[작성]
+                  {% else%}
+                    {{notice.modified_at}}[수정]
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+              <!-- 공지의 코멘트 댓글 영역 -->
+              <!-- Comment가 존재한다면 보여주기 -->
+              {% if commentlists %}
+                <div class="mt-3">
+                  {% for comment in commentlists %}
+                    <!-- 앵커 부분 -->
+                    <a name="comment_{{comment.id}}"></a>
+                    <div class="comment py-2 text-muted">
+                      <span style="white-space: pre-line; font-size:1.2rem;">
+                        <strong>{{comment.content}}</strong>
+                      </span>
+                      <span>
+                        -
+                        <strong style="color:blue;">{{comment.author.nickname}}</strong>
+                        /
+                        {% if not comment.modified_at %}
+                          {{comment.created_at}}[작성]
+                        {% else %}
+                          {{comment.modified_at}}[수정]
+                        {% endif %}
+                      </span>
+
+                      <!-- comment 작성자와 로그인 사용자가 같다면 보여주기-->
+                      {% if comment.author == request.user %}
+                        <a href="{% url 'comment_notice_update' comment.id %}" class="small">수정</a>
+                        <a href="" data-uri="{% url 'comment_notice_delete' comment.id %}" class="small delete">삭제</a>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                  <!-- 공지물에 대한 comment page -->
+                  <nav aria-label="...">
+                    <ul class="pagination justify-content-center">
+                      {% if commentlists.has_previous %}
+                        <li class="page-item">
+                          <a class="page-link" href="#" data-page="{{commentlists.previous_page_number}}">이전</a>
+                        </li>
+                      {% endif %}
+                
+                      {% for comment_page in commentlists.paginator.page_range %}
+                        {% if comment_page >= commentlists.number|add:-5 and comment_page <= commentlists.number|add:5 %}
+                          <li class="page-item {% if comment_page == commentlists.number %}active{% endif %}">
+                            <a class="page-link" href="#" data-page="{{comment_page}}">{{comment_page}}</a>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                
+                      {% if commentlists.has_next %}
+                        <li class="page-item">
+                          <a class="page-link" href="#" data-page="{{commentlists.next_page_number}}">다음</a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                  </nav>
+                </div>
+              {% endif %}
+              <div>
+                <a href="{% url 'comment_notice_create' notice.id %}" class="small">Comment 추가..</a>
+              </div>
+              <!-- 공지사항의 코멘트 댓글 영역 종료 -->
+            </div>
+            <!-- 공지사항 card body 종료 -->
+          </div>
+
+          <!-- 검색 기능 / 이벤트, 공지 등 수정 -->
+          <form action='{% url 'notice_index' %}' id='listForm'>
+            <input type="hidden" name="keyword" class="keyword" value="{{keyword|default_if_none:''}}">
+            <input type="hidden" name="page" id="page" value="{{page|default_if_none:''}}">
+          </form>
+
+          <a href="" class="back_to_list btn btn-ls mx-3 my-4">
+            <i class="bi bi-list">목록으로</i>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- comment 페이지 반응하는 폼 -->
+<form action='{% url 'notice_detail' notice.id %}' id='searchForm'>
+  <input type="hidden" name="keyword" class="keyword" value="{{keyword|default_if_none:''}}">
+  <input type="hidden" name="page" id="page" value="{{page|default_if_none:''}}">
+  <input type="hidden" name="so" id="sort" value="{{so|default_if_none:''}}">
+  <input type="hidden" name="comment_page" id="comment_page" value="{{comment_page|default_if_none:''}}">
+</form>
+
+{% endblock contents %}
+{% block script %}
+<script>
+  // 질문(답변) 삭제 버튼클릭 시 confirm('정말 삭제할거니?') 띄워보기
+  let elements = document.querySelectorAll(".btn-dngr, .delete");
+
+  elements.forEach((ele, idx) => {
+    ele.addEventListener("click", (e) => {
+      // confirm() : 확인을 클릭하면, data-uri 값을 가지고 오기, location.href = 가져온 data-uri 대입
+      if (confirm("정말로 삭제하시겠습니까?")) {
+        //console.log("경로 ", e.target.dataset.uri);
+        location.href = e.target.dataset.uri; // data- 값은 dataset으로 들어온다..
+      }
+    });
+  });
+
+  // comment 추천 받기 추가해보기
+  let votes = document.querySelectorAll(".recommend");
+
+  votes.forEach((ele, idx) => {
+    ele.addEventListener("click", (e) => {
+      // confirm() : 확인을 클릭하면, data-uri 값을 가지고 오기, location.href = 가져온 data-uri 대입
+      //confirm("정말 추천하시겠습니까?");
+      if (confirm("정말 추천하시겠습니까?")) {
+        //console.log("경로 ", e.target.dataset.uri);
+        location.href = e.target.dataset.uri; // data- 값은 dataset으로 들어온다..
+      }
+    });
+  });
+
+  // 목록으로 클릭 시 listForm submit 시키기
+  document
+    .querySelector(".back_to_list")
+    .addEventListener('click', (e) => {
+      e.preventDefault();
+      document
+        .querySelector("#listForm")
+        .submit();
+    })
+  
+  // comment 페이지 처리
+  const pages = document.querySelectorAll('.page-link');
+    pages.forEach((item, idx) => {
+      item.addEventListener("click", (e) => {
+        document
+          .querySelector('#comment_page')
+          .value = e.target.dataset.page;
+        // searchForm 전송
+        searchForm.submit();
+      })
+    })
+</script>
+{% endblock script %}

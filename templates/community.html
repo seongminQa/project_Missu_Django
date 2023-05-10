@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <style>
+      .cor {
+        background-color: #1A244D;
+      }
+
+      .container,
+      body {
+        background: linear-gradient(#1A244D, #652c87);
+        background-repeat: no-repeat;
+      }
+
+      .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+      }
+    </style>
+    {% block style %}{% endblock style %}
+    <title>Project_5</title>
+  </head>
+
+  <body>
+    <div class="cor">
+      {% include 'nav.html' %}
+    </div>
+    <div class="wrapper pb-3">
+      <!-- nav 밑 바디 컨테이너 -->
+      <div class="container-fluid mt-3" style="height: auto !important;">
+
+        <div class="row" style="height: auto !important;">
+
+          <!-- Sidebar -->
+          <div class="col-xm-12 col-sm-4 col-md-2 p-2">
+
+            <ul class="my-3" style="padding:1em; font-size:1.2rem; color:red;">
+              <li class="my-1">
+                <a href="https://top.cafe.daum.net/_c21_/fancafe_list" target="_blank">
+                  Daum 공식팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="http://newjeans.info/" target="_blank">
+                  NewJeans 팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="https://ibighit.com/bts/kor/" target="_blank">
+                  BTS 팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="https://m.cafe.daum.net/IVEstarship/_rec" target="_blank">
+                  IVE 팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="https://cafe.naver.com/hybeeeee" target="_blank">
+                  르세라핌 팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="https://cafe.daum.net/hero0616" target="_blank">
+                  임영웅 팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="https://m.cafe.daum.net/IU/_rec" target="_blank">
+                  아이유 팬카페</a>
+              </li>
+              <li class="my-1">
+                <a href="#" target="">
+                  ★ 추가 신청하기 ★
+                </a>
+              </li>
+            </ul>
+
+          </div>
+
+          <!-- 팬 카드 시작 -->
+          <div class="col-xm-12 col-sm-8 col-md-10 p-2" style="height: auto !important;">
+
+            <div class="row">
+
+              <div class="col">
+                <div class="card pb-3" style="width: 18rem; margin: 16px;">
+                  <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjExMTNfNDEg%2FMDAxNjY4MzIwNjY4MTEw.AXKMapdoEeHHimiirei158mVV214glzBCOmP3kaRolsg.nRN1cGJLfsX67VPd9vPE6BjNko4v-XWuiy5-jovRyq0g.JPEG.wngml3974%2Fimage%25A3%25DFreadtop%25A3%25DF2022%25A3%25DF668430%25A3%25DF16590525955122471.jpg&type=a340" class="card-img-top" alt="..." style="height:26rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">뉴진스</h5>
+                    <p class="card-text">가수 / 그룹 소개글</p>
+                    <a href="#" class="btn btn-primary">팬 사이트</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card pb-3" style="width: 18rem; margin: 16px;">
+                  <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjAzMjdfMTMg%2FMDAxNjQ4MzUxMzYyNjUw.vHJ-hD4srlDkHk8YwXyLnrBRlHDSWJFE6wG-OboIQ9cg.Pvt2GmMnCkVTufrBZuM5G6s5Bf6v4YUhs47do6k04Vog.JPEG.gwmfruckwrl%2F220327-IVE-1.jpeg&type=a340" class="card-img-top" alt="..." style="height:26rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">아이브</h5>
+                    <p class="card-text">가수 / 그룹 소개글</p>
+                    <a href="#" class="btn btn-primary">팬 사이트</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card pb-3" style="width: 18rem; margin: 16px;">
+                  <img src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ffe%2F88%2Fa9%2Ffe88a91e719447c3695a5648e55313a2.jpg&type=a340" class="card-img-top" alt="..." style="height:26rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">방탄소년단</h5>
+                    <p class="card-text">가수 / 그룹 소개글</p>
+                    <a href="#" class="btn btn-primary">팬 사이트</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card pb-3" style="width: 18rem; margin: 16px;">
+                  <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjAzMjhfNjcg%2FMDAxNjQ4NDE2NzIwMTYz.5S3fkD08IX8f61-rF8j8BhtgNMORpl4bJVI_hr0Q85Eg.A_2nekuxmsLmSHHQl590WFN8f_5WuD-iQQ2fnC9L-4og.JPEG.call110926%2FInternet%25A3%25DF20220328%25A3%25DF062613%25A3%25DF113.jpeg&type=a340" class="card-img-top" alt="..." style="height:26rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">아이유</h5>
+                    <p class="card-text">가수 / 그룹 소개글</p>
+                    <a href="#" class="btn btn-primary">팬 사이트</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card pb-3" style="width: 18rem; margin: 16px;">
+                  <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjExMzBfMjUw%2FMDAxNjY5ODAzNzA5MDAx.bdXR_DpMKaDjR67r6iXMlT9rgvFEcfVHinWTM_tSJWcg.odf8kzy5nAiwW5eTHYQzhSoNNfBhOuW3w7kbB9paVnAg.JPEG.dm9502%2FKakaoTalk_20221130_190639562_03.jpg&type=ofullfill340_600_png" class="card-img-top" alt="..." style="height:26rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">임영웅</h5>
+                    <p class="card-text">가수 / 그룹 소개글</p>
+                    <a href="#" class="btn btn-primary">팬 사이트</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card pb-3" style="width: 18rem; margin: 16px;">
+                  <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjA0MTFfMzUg%2FMDAxNjQ5NjI5NjQyMzI2.KJB-gnCS_VnTZpvbZCW4qOpW9j_38SRUKiMcaLDw8GAg.hg_08-LgIcqx8NuU9b09GWFIj-bAXsGZqCBSPuvf740g.JPEG.pkeunyoo%2F0000805000%25A3%25DF004%25A3%25DF20220410074401536.jpg&type=a340" class="card-img-top" alt="..." style="height:26rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">르세라핌</h5>
+                    <p class="card-text">가수 / 그룹 소개글</p>
+                    <a href="#" class="btn btn-primary">팬 사이트</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!-- 팬카드 row 끝 -->
+          </div>
+          <!-- 팬 카드 끝 -->
+        </div>
+      </div>
+    </div>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    {% block script %}{% endblock script %}
+  </body>
+
+</html>

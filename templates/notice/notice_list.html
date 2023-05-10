@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/notice.css' %}">
+{% endblock style %}
+{% load board_filter %}
+
+{% block contents %}
+<div class="container text-dark mb-5 mt-5 pt-2 pb-4 my-class">
+  <div class="container my-3 mb-3">
+    <div class="row my-4 text-center">
+      <h1>
+        <b>공지사항 목록</b>
+      </h1>
+    </div>
+
+    <div class="row justify-content-end my-3 mb-3">
+      <div class="col-md-auto">
+        <div class="input-group">
+          <input type="text" name="keyword" id="keyword" class="form-control text-black bg-white" value="{{keyword_value|default_if_none:''}}">
+          <button type="button" class="btn btn-dark">검색</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-start my-3 mb-3">
+      <div class="col-md-auto">
+        <button type="button" class="btn btn-ls" id="all" value="전체">전체</button>
+        <button type="button" class="btn btn-ls" id="service" value="서비스">서비스</button>
+        <button type="button" class="btn btn-ls" id="operation" value="작업">작업</button>
+        <button type="button" class="btn btn-ls" id="update" value="업데이트">업데이트</button>
+        <button type="button" class="btn btn-ls" id="event" value="이벤트">이벤트</button>
+      </div>
+    </div>
+
+    <table class="table text-center" style="width:100%; min-width:500px">
+      <thead style="font-size:16px; line-heigth:30%;">
+        <tr>
+          <th style="width:5%;">번호</th>
+          <th style="width:15%;">카테고리</th>
+          <th style="width:45%;">제목</th>
+          <th style="width:25%;">작성일시</th>
+          <th style="width:10%;">조회수</th>
+        </tr>
+      </thead>
+
+      {% for list in lists %}
+        <tbody>
+          <tr class="align-middle">
+            <td>{{lists.paginator.count|sub:lists.start_index|sub:forloop.counter0|add:1}}</td>
+            <td>
+              {% if list.category == "긴급공지" %}
+                <span class="badge bg-danger">{{list.category}}</span>
+              {% else %}
+                {{list.category}}
+              {% endif %}
+            </td>
+            <td>
+              <div>
+                <a class="nav-link move" href="{% url 'notice_detail' list.id %}" style="text-decoration-line:none; display:inline;">{{list.title}}
+                  <span class="text-green">[
+                    {{list.noticecomments_set.count}}
+                    ]</span></a>
+              </div>
+
+            </td>
+            <td>{{list.created_at}}</td>
+            <td>{{list.view_cnt}}</td>
+          </tr>
+        </tbody>
+      {% endfor %}
+    </table>
+
+    <!-- 관리자 아이디에만 보이게끔 수정**-->
+    {% if request.user.is_superuser == 1 %}
+      <div class="row">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <a href="{% url 'notice_create' %}" class="btn btn-cover">공지등록</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 페이지 처리 -->
+  <nav aria-label="...">
+    <ul class="pagination justify-content-center">
+      {% if lists.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="#" data-page="{{lists.previous_page_number}}">이전</a>
+        </li>
+      {% endif %}
+
+      {% for page in lists.paginator.page_range %}
+        {% if page >= lists.number|add:-5 and page <= lists.number|add:5 %}
+          <li class="page-item {% if page == lists.number %} active {% endif %}">
+            <a class="page-link" href="#" data-page="{{page}}">{{page}}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if lists.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="#" data-page="{{lists.next_page_number}}">다음</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <!-- 검색 시 동작하는 폼 method를 post로 적용하지 않으면 무조건 get방식-->
+  <form action='{% url 'notice_index' %}' id='searchForm'>
+    <input type="hidden" name="keyword" class="keyword" value="{{keyword_value|default_if_none:''}}">
+    <input type="hidden" name="page" id="page" value="{{page|default_if_none:''}}">
+  </form>
+
+</div> 
+{% endblock contents %}
+
+{% block script %}
+  <script>
+    const searchForm = document.querySelector('#searchForm');
+
+    // 검색버튼 클릭 시
+    // 사용자가 입력한 검색어 가져오기
+    document
+      .querySelector('.btn-dark')
+      .addEventListener("click", () => {
+        let keyword = document
+          .querySelector('#keyword')
+          .value;
+
+        // 가져온 검색이름 searchForm 안의 keyword요소에 value 값으로 지정
+        document
+          .querySelector('.keyword')
+          .value = keyword;
+        // searchForm 안의 page 요소의 값을 1로 지정
+        document
+          .querySelector('#page')
+          .value = 1;
+        // searchForm 전송
+        searchForm.submit();
+      })
+
+      {% comment %} // 카테고리 버튼 클릭시** {% endcomment %}
+      {% comment %} { % comment % {% endcomment %}
+      {% comment %} } {% endcomment %}
+      {% comment %} document {% endcomment %}
+      {% comment %} .querySelector('.btn-ls') {% endcomment %}
+      {% comment %} .addEventListener("click", () => { {% endcomment %}
+        {% comment %} let keyword = document {% endcomment %}
+          {% comment %} .querySelector('#event') {% endcomment %}
+          {% comment %} .value; {% endcomment %}
+
+        {% comment %} // 가져온 검색이름 searchForm 안의 keyword요소에 value 값으로 지정 {% endcomment %}
+        {% comment %} document {% endcomment %}
+          {% comment %} .querySelector('.keyword') {% endcomment %}
+          {% comment %} .value = keyword; {% endcomment %}
+        {% comment %} // searchForm 안의 page 요소의 값을 1로 지정 {% endcomment %}
+        {% comment %} document {% endcomment %}
+          {% comment %} .querySelector('#page') {% endcomment %}
+          {% comment %} .value = 1; {% endcomment %}
+        {% comment %} // searchForm 전송 {% endcomment %}
+        {% comment %} searchForm.submit(); {% endcomment %}
+      {% comment %} }) { % endcomment % {% endcomment %}
+      {% comment %} } {% endcomment %}
+
+      // 하단의 페이지 1,2,3 ... -> 클릭시 searchForm 전송하기
+      const pages = document.querySelectorAll('.page-link');
+    pages.forEach((item, idx) => {
+      item.addEventListener("click", (e) => {
+        document
+          .querySelector('#page')
+          .value = e.target.dataset.page;
+        action // searchForm 전송
+        searchForm.submit();
+      })
+    })
+
+    // 상세보기 - keyword,page 같이 따라가야함
+    //           searchForm 보내서 필요한 정보를 detail 로 보내기
+    const titles = document.querySelectorAll(".move");
+
+    titles.forEach((title, idx) => {
+      title.addEventListener('click', (e) => {
+        // 제목 클릭 시 a 태그 기능 중지
+        e.preventDefault();
+
+        searchForm.setAttribute("action", e.target.getAttribute('href'));
+        searchForm.submit();
+      })
+    })
+    document
+      .querySelector("#all")
+      .addEventListener("click", () => {
+        location.href = "http://127.0.0.1:8000/notice/";
+      })
+    document
+      .querySelector("#service")
+      .addEventListener("click", () => {
+        let keyword1 = document
+          .querySelector('#service')
+          .value;
+        document
+          .querySelector('.keyword')
+          .value = keyword1;
+        // searchForm 안의 page 요소의 값을 1로 지정
+        document
+          .querySelector('#page')
+          .value = 1;
+        // searchForm 전송
+        searchForm.submit();
+      })
+    document
+      .querySelector("#operation")
+      .addEventListener("click", () => {
+        let keyword2 = document
+          .querySelector('#operation')
+          .value;
+        document
+          .querySelector('.keyword')
+          .value = keyword2;
+        // searchForm 안의 page 요소의 값을 1로 지정
+        document
+          .querySelector('#page')
+          .value = 1;
+        // searchForm 전송
+        searchForm.submit();
+      })
+    document
+      .querySelector("#update")
+      .addEventListener("click", () => {
+        let keyword3 = document
+          .querySelector('#update')
+          .value;
+        document
+          .querySelector('.keyword')
+          .value = keyword3;
+        // searchForm 안의 page 요소의 값을 1로 지정
+        document
+          .querySelector('#page')
+          .value = 1;
+        // searchForm 전송
+        searchForm.submit();
+      })
+    document
+      .querySelector("#event")
+      .addEventListener("click", () => {
+        let keyword4 = document
+          .querySelector('#event')
+          .value;
+        document
+          .querySelector('.keyword')
+          .value = keyword4;
+        // searchForm 안의 page 요소의 값을 1로 지정
+        document
+          .querySelector('#page')
+          .value = 1;
+        // searchForm 전송
+        searchForm.submit();
+      })
+  </script>
+{% endblock script %}

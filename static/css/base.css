@@ -1,0 +1,47 @@
+/*
+base.html
+top.html
+*/
+
+html,
+body {
+  background: linear-gradient(#1a244d, #652c87);
+
+  min-height: 100vh;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+footer {
+  position: relative;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+footer > ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+
+  padding-top: 10px;
+  padding-bottom: 20px;
+  color: ivory;
+}
+
+footer li {
+  padding-right: 8px;
+  font-weight: bold;
+}
